@@ -375,6 +375,6 @@ ________________________________________
 ![image](https://github.com/user-attachments/assets/60ac83ab-c790-402a-bb44-7b7c6cb0cc44)
 Тут же мы создали роль limited, которая унаследовала все права роли limited_user так же при помощи метода GRANT:
 
-      GRANT <role with rights> TO <role without rights>;
+        GRANT <role with rights> TO <role without rights>;
 
 Где \<role with rights> - роль, которая передает свои права и делает своим членом роль \<role without rights>.
