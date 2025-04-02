@@ -69,6 +69,9 @@ Tar (архив) – -Ft
 
     pg_dump -U postgres -d postgres -Fp -f backup.sql
 
+ ![image](https://github.com/user-attachments/assets/1974f3c3-b228-4510-ae32-5e1a0137f131)
+
+
 Т.к. точной директории при создании дамба я не указала, файл бэкапа сохраниться в ```/home/username/backup.sql.``` 
 
 Команда для восстановления:
