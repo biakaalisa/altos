@@ -221,3 +221,15 @@ CPU:
 # 7. Мониторинг PostgreSQL 
 ### Изучить встроенные представления статистики в PostgreSQL (например, pg_stat_activity, pg_stat_database). Показать, как смотреть активные процессы, долгие запросы и т.д. Показать как можно принудительно завершить процесс зависший или слишком тяжелый запрос (необходимо иметь роль суперюзера) 
 
+![image](https://github.com/user-attachments/assets/141acd00-1a5c-4512-b4bd-d65fb2f246d9)
+
+     SELECT pid, usename, datname, client_addr, state, query_start, query
+     FROM pg_stat_activity
+     WHERE state != 'idle';
+
+pg_stat_activity - Это системное представление (view), которое показывает все текущие подключения к PostgreSQL: кто подключён, откуда, что делает, какой запрос выполняется, и сколько он длится.
+- Имя пользователя (usename)
+- Название базы (datname)
+- IP-адрес клиента (client_addr)
+- PID процесса (pid)
+- Приложение (application_name)
