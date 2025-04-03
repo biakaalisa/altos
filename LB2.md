@@ -69,7 +69,8 @@ Tar (архив) – -Ft
 
     pg_dump -U postgres -d postgres -Fp -f backup.sql
 
- ![image](https://github.com/user-attachments/assets/1974f3c3-b228-4510-ae32-5e1a0137f131)
+![image](https://github.com/user-attachments/assets/1974f3c3-b228-4510-ae32-5e1a0137f131)
+![image](https://github.com/user-attachments/assets/75bd187c-e585-496a-9d5b-77dd0559cfc4)
 
 
 Т.к. точной директории при создании дамба я не указала, файл бэкапа сохраниться в ```/home/username/backup.sql.``` 
@@ -78,4 +79,54 @@ Tar (архив) – -Ft
 
     psql -U user -d new_dbname -f backup.sql
 
-# 3. Частичное (выборочное) резервное копирование Сделать дамп только определённой схемы (например, test_schema, созданной в ЛР №1). Сделать дамп только определённых таблиц из схемы public. Объяснить, в чём отличие от резервного копирования всей базы.    
+# 3. Частичное (выборочное) резервное копирование 
+### Сделать дамп только определённой схемы (например, test_schema, созданной в ЛР №1). Сделать дамп только определённых таблиц из схемы public. Объяснить, в чём отличие от резервного копирования всей базы.    
+
+Для резервного копирования отдельных схем или таблиц используется ```pg_dump``` с параметрами выбора объектов. Это отличается от полного бэкапа базы ```(pg_dump -d dbname)``` тем, что сохраняются только указанные данные, что экономит место и время.
+
+![image](https://github.com/user-attachments/assets/2f343eab-cce4-47f7-8ca1-14b5e6a5dd89)
+![image](https://github.com/user-attachments/assets/7ba767da-3217-4d26-8c5d-bde908befd2e)
+![image](https://github.com/user-attachments/assets/8c70596e-b931-42ba-aed5-2bad0a617040)
+
+Скопируем только схему test_schema, созраняя данные внутри нее при помощи:
+
+    pg_dump -U postgres -d postgres -n test_schema -Fc -f test_schema.dump
+
+ + -U postgres - делаем копирование от имени пользователя postgres
+ + -d postgres - копируем схему из бд postgres
+ + -n test_schema — дамп только схемы test_schema
+ + -Fc — бинарный формат (используем только его, т.к. в лабораторной работе есть пунктик о восстановлении определенной таблицы, и именно данный режим наиболее удобен для точечноговосстановления элементов)
+ + -f test_schema.dump — сохранение в файл
+
+Скопируем таблицу test из схемы public при помощи команды:
+
+    pg_dump -U postgres -d postgres -t public.test -Fc -f public-test.dump
+
+Для восстановления одной таблицы можно использовать:
+
+    pg_restore -U postgres -d restored_db -t test public-test.dump
+
+ ![image](https://github.com/user-attachments/assets/2b5e3cdb-6361-455e-9ea1-76cd63fc3ae9)
+
+
+# 4. Восстановление из резервной копии 
+### Восстановить базу из резервного файла с помощью pg_restore или утилиты psql. Продемонстрировать процесс и результаты. 
+
+Перед восстановлением базы обязательно нужно создать пустую БД, в которую вудет все записано
+
+      psql -U postgres -c "CREATE DATABASE restored_db;"
+
+Для восстановления базы можно использовать одну из двух команд:
+- pg_restore. Подходит для восстановления бинарных дампов (-Fc  или  -Fd )
+- psql -f. Для восстановления из текстовых SQL-дампов (-Fp)
+  
+![image](https://github.com/user-attachments/assets/80d55245-fd83-4c3e-9e05-7ce7dbaf5690)
+
+Т.к. бэкап базы делали при помощи -Fp, восстанавливать будем командой:
+
+    psql -U postgres -d restored_db -f backup.sql
+
+
+# 5. Автоматизация бэкапов с помощью cron 
+### Настроить планировщик cron на Debian, чтобы ежедневно создавать резервные копии. Указать, куда складываются дампы, и как выполняется ротация. Обязательно понимать, что такое ротация!     
+
