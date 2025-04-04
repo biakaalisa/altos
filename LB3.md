@@ -1,4 +1,4 @@
-**Лабораторная работа №3: Расширенные возможности и оптимизация 
+![image](https://github.com/user-attachments/assets/aaeb719e-0f95-4e81-a137-dc616f746181)**Лабораторная работа №3: Расширенные возможности и оптимизация 
 PostgreSQL на Debian**
 
 Получить опыт в использовании продвинутых функций PostgreSQL (индексы, 
@@ -13,17 +13,21 @@ PostgreSQL на Debian**
 - maintenance_work_mem - объем памяти для операций обслуживания БД (VACUUM, CREATE INDEX и др.). от 64MB до 512MB
 - effective_cache_size - оценка объема памяти, доступного для кэширования ОС и PostgreSQL. Не выделяет память, но помогает планировщику запросов. Обычно ставится: 60–75% ОЗУ.
 
-           !!!! sudo nano /etc/postgresql/15/main/postgresql.conf !!!!
+            sudo nano /etc/postgresql/15/main/postgresql.conf
 
 Для того, чтобы узнать количество оперативной памяти:
 
           free -h
 
+![image](https://github.com/user-attachments/assets/adcb2a4d-efa8-4ffd-8c1e-302d561b0138)
+![image](https://github.com/user-attachments/assets/b94ce53d-a03c-4c33-bb46-fc8818d37805)
+
+
 Изменили:
   - shared_buffers = 512MB
   - work_mem = 16MB
   - maintenance_work_mem = 128MB
-  - effective_cache_size = 1.2GB
+  - effective_cache_size = 4GB
 
     sudo systemctl restart postgresql
 
@@ -33,6 +37,9 @@ PostgreSQL на Debian**
           SHOW work_mem;
           SHOW maintenance_work_mem;
           SHOW effective_cache_size;
+
+![image](https://github.com/user-attachments/assets/ebdfa8d8-97bf-41ce-bb92-d17febaa66c4)
+
 
 # 2. Создание и анализ индексов 
 ### Использовать таблицы из предыдущих лабораторных работ или при необходимости добавить новые. При необходимости наполнить их большим количеством строк для тестирования, смотрим generate_series Создать индексы (по одному или нескольким столбцам) на подходящих полях. Сохранить команды CREATE INDEX. Выполнить запросы EXPLAIN и EXPLAIN ANALYZE до и после создания индексов.Сравнить планы (Seq Scan, Index Scan) и время выполнения запросов.
@@ -53,12 +60,21 @@ PostgreSQL на Debian**
               NOW() - (i * INTERVAL '1 day') AS order_date,
               (RANDOM() * 10000)::INT AS amount
           FROM generate_series(1, 50 000) AS i;
+          
+![image](https://github.com/user-attachments/assets/6bca02af-9d3e-4b62-b22d-de8339e29a0b)
+![image](https://github.com/user-attachments/assets/b3a571b2-69cf-4fa0-b37d-1d4427ee72b9)
 
           
 EXPLAIN (предварительный анализ) и EXPLAIN ANALYZE (фактический анализ)
 
-EXPLAIN SELECT * FROM orders WHERE order_name = 'Тестовый заказ №49999';
 
-EXPLAIN ANALYZE SELECT * FROM orders WHERE order_name = 'Тестовый заказ №49999';
+           EXPLAIN SELECT * FROM orders WHERE order_name = 'Тестовый заказ №49999';
+
+![image](https://github.com/user-attachments/assets/b0e6266d-175e-41b3-9e28-7604430ef09c)
+
+           EXPLAIN ANALYZE SELECT * FROM orders WHERE order_name = 'Тестовый заказ №49999';
+           
+![image](https://github.com/user-attachments/assets/6eb33d5f-535c-4b30-826f-15764c696623)
+
 
 
