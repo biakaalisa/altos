@@ -1,4 +1,4 @@
-![image](https://github.com/user-attachments/assets/bfc2130a-fda5-43e6-8f5e-a27b1a1512d0)![image](https://github.com/user-attachments/assets/aaeb719e-0f95-4e81-a137-dc616f746181)**Лабораторная работа №3: Расширенные возможности и оптимизация 
+**Лабораторная работа №3: Расширенные возможности и оптимизация 
 PostgreSQL на Debian**
 
 Получить опыт в использовании продвинутых функций PostgreSQL (индексы, 
