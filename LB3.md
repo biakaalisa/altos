@@ -161,14 +161,83 @@ PostgreSQL должен прочитать все строки в таблице
             END;
             $$ LANGUAGE plpgsql;
 
+![image](https://github.com/user-attachments/assets/3c9227b8-c610-4513-8246-0e19d3cde2c0)
+
+
 Привязываем созданный триггер к таблице:
 
             CREATE TRIGGER trg_check_amount
             BEFORE INSERT OR UPDATE ON orders
             FOR EACH ROW
             EXECUTE FUNCTION check_amount_before_insert_update();
+
+![image](https://github.com/user-attachments/assets/f6a567ce-733f-4a37-bf6d-60fe154b5b4e)
+
 Проверяем:
 
             INSERT INTO orders (order_name, order_date, amount) VALUES ('Нормальный заказ', NOW(), 1500);
             
             INSERT INTO orders (order_name, order_date, amount) VALUES ('Плохой заказ', NOW(), -1500);
+
+![image](https://github.com/user-attachments/assets/c06e6b25-3360-4b3f-a0db-743589e481cb)
+
+# 5. Автоматическая очистка и статистика (VACUUM, ANALYZE) 
+### Изучить параметры autovacuum (например, autovacuum_naptime, autovacuum_vacuum_scale_factor).Убедиться, что autovacuum включён (значение on).Выполнить VACUUM ANALYZE для одной или нескольких таблиц.Объяснить назначение VACUUM и ANALYZE (очистка «мёртвых» строк, актуализация статистики). Изучить представления pg_stat_user_tables, pg_stat_all_indexes и другие.Найти информацию о количестве выполненных autovacuum и manual vacuum.
+
+VACUUM:
+- Очищает "мёртвые" строки (помеченные как удалённые)
+- Освобождает место для повторного использования
+- Обновляет карту видимости (visibility map)
+
+ANALYZE:
+- Собирает статистику о распределении данных в таблицах
+- Используется планировщиком запросов для оптимизации выполнения
+
+Autovacuum - это фоновый процесс PostgreSQL, который автоматически выполняет операции VACUUM и ANALYZE. Вот ключевые параметры:
+- autovacuum - главный переключатель (on/off)
+- autovacuum_naptime - пауза между проверками (по умолчанию 1 мин)
+- autovacuum_vacuum_scale_factor - доля изменённых строк для запуска VACUUM (по умолчанию 0.2 = 20%)
+- autovacuum_analyze_scale_factor - аналогично для ANALYZE (по умолчанию 0.1 = 10%)
+- autovacuum_vacuum_threshold - минимальное количество изменений для запуска (по умолчанию 50)
+- autovacuum_analyze_threshold - аналогично для ANALYZE (по умолчанию 50)
+
+Для проверки статуса Autovacuum необходимо исользовать:
+
+            SHOW autovacuum;
+
+![image](https://github.com/user-attachments/assets/81f5a4d3-c63f-4ba3-8b6b-328ab6a0ed4a)
+
+Для того, тобы вручную запустить VACUUM и ANALYZE:
+
+            VACUUM ANALYZE orders;            // для таблицы orders
+            VACUUM ANALYZE;                   // для всей БД 
+            
+![image](https://github.com/user-attachments/assets/80f6ddb9-3d6a-4065-a50d-58b3ef9b0e4c)
+
+pg_stat_user_tables - статистика по таблицам:
+
+            SELECT relname, n_dead_tup, last_vacuum, last_autovacuum 
+            FROM pg_stat_user_tables;
+            
+![image](https://github.com/user-attachments/assets/a44cff10-e3e6-4b5d-b934-1aa1e504d01c)
+
+pg_stat_all_indexes - статистика по индексам:
+
+            SELECT indexrelname, idx_scan, idx_tup_read, idx_tup_fetch 
+            FROM pg_stat_all_indexes;
+
+![image](https://github.com/user-attachments/assets/0f418917-5f37-4c9a-b0fc-ddfa6d3c2e61)
+
+- indexrelname - имя индекса
+- idx_scan - количество сканирований этого индекса
+- idx_tup_read - количество прочитанных через индекс записей
+- idx_tup_fetch - количество записей, фактически извлечённых из таблицы по этому индексу
+
+Статистика по vacuum:
+
+            SELECT relname, 
+                   vacuum_count, 
+                   autovacuum_count,
+                   analyze_count,
+                   autoanalyze_count
+            FROM pg_stat_user_tables;
