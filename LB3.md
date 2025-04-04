@@ -71,11 +71,14 @@ EXPLAIN (предварительный анализ) и EXPLAIN ANALYZE (фак
            EXPLAIN ANALYZE SELECT * FROM orders WHERE amount = 2512;
 
 ![image](https://github.com/user-attachments/assets/b0e6266d-175e-41b3-9e28-7604430ef09c)
+![image](https://github.com/user-attachments/assets/6a4a08c0-da6a-414d-bf9a-982e1665f8ec)
+
 
            EXPLAIN ANALYZE SELECT * FROM orders WHERE order_name = 'Тестовый заказ №49999';
            EXPLAIN ANALYZE SELECT * FROM orders WHERE amount = 2512;
            
 ![image](https://github.com/user-attachments/assets/6eb33d5f-535c-4b30-826f-15764c696623)
+![image](https://github.com/user-attachments/assets/8ea31103-1325-4729-a50e-805a37b30b59)
 
 Индекс — это специальная структура данных, которая позволяет ускорить поиск строк в таблице по определённым столбцам.
 Когда происходит запрос вроде:
@@ -85,9 +88,19 @@ EXPLAIN (предварительный анализ) и EXPLAIN ANALYZE (фак
 PostgreSQL должен прочитать все строки в таблице, чтобы найти подходящую. Это называется Seq Scan (последовательное сканирование таблицы).
 
 Если создать индекс на поле email, то PostgreSQL быстро найдёт нужную строку, не читая всю таблицу. Такой способ называется Index Scan.
+![image](https://github.com/user-attachments/assets/cbabd8f9-1cbe-4801-b78b-3c0340e9460f)
 
             CREATE INDEX idx_orders_order_name ON orders(order_name);
             CREATE INDEX idx_orders_amount ON orders(amount);
+            
+![image](https://github.com/user-attachments/assets/d82d6d98-a11b-4be5-b83a-91e648fa8189)
+
+Проверка и сравнение результатов скорости выполнения запросов с использованием индексов: 
+
+![image](https://github.com/user-attachments/assets/1e439a3e-8287-4bbf-b0a2-7e86a11b41be)
+![image](https://github.com/user-attachments/assets/e65a84f3-3894-4275-8a09-d85be834e213)
+![image](https://github.com/user-attachments/assets/9e9ef9ba-3a8e-41b9-b578-a40d280f60c7)
+
 
 # 3. Хранимые функции  
 ### Создать функцию на pgSQL, которая проверяет переданное значение и в зависимости от результата либо вставляет новую запись в таблицу, либо возвращает сообщение об ошибке (например, «Запись добавлена» или «Ошибка отрицательное значение»). Выполнить вызов функции в psql и проверить результат вставки. 
