@@ -105,3 +105,28 @@ PostgreSQL должен прочитать все строки в таблице
 # 3. Хранимые функции  
 ### Создать функцию на pgSQL, которая проверяет переданное значение и в зависимости от результата либо вставляет новую запись в таблицу, либо возвращает сообщение об ошибке (например, «Запись добавлена» или «Ошибка отрицательное значение»). Выполнить вызов функции в psql и проверить результат вставки. 
 
+Создадим хранимую функцию которая будет:
+- принимать параметры (например, order_name, order_date, amount);
+- проверять, что amount ≥ 0;
+- если значение корректное — вставлять запись в таблицу orders;
+- иначе — возвращать сообщение об ошибке.
+
+                          CREATE OR REPLACE FUNCTION insert_order_check(
+                            p_order_name TEXT,
+                            p_order_date TIMESTAMP,
+                            p_amount INTEGER
+                        )
+                        RETURNS TEXT
+                        LANGUAGE plpgsql
+                        AS $$
+                        BEGIN
+                            IF p_amount < 0 THEN
+                                RETURN 'Ошибка: отрицательное значение';
+                            ELSE
+                                INSERT INTO orders (order_name, order_date, amount)
+                                VALUES (p_order_name, p_order_date, p_amount);
+                                
+                                RETURN 'Запись добавлена';
+                            END IF;
+                        END;
+                        $$;
