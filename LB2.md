@@ -233,3 +233,40 @@ pg_stat_activity - Это системное представление (view), 
 - IP-адрес клиента (client_addr)
 - PID процесса (pid)
 - Приложение (application_name)
+
+Можно использовать и более "глобальный" запрос ```SELECT * FROM pg_stat_activity;```, который вернет: 
+- datname — имя базы данных
+- usename — имя пользователя
+- client_addr — IP клиента
+- state — статус соединения (active / idle / idle in transaction / ...)
+![image](https://github.com/user-attachments/assets/42847ccb-58dd-4942-abae-d91cbe50822d)
+- query — текущий SQL-запрос
+- query_start — когда начался запрос
+- backend_start — когда началась сессия
+- pid — уникальный идентификатор процесса
+
+Для просмотра активных запросов, можно использовать команду:
+
+      SELECT *
+      FROM pg_stat_activity
+      WHERE state = 'active';
+
+Для просмотра долговыполняющихся запросов:
+
+     SELECT pid, usename
+     FROM pg_stat_activity
+     WHERE state = 'active' AND query_start < now() - interval '5 minutes';
+
+- SELECT pid, usename, ...	Выводит ID процесса, имя пользователя, длительность запроса и сам запрос
+- now() - query_start AS duration	Считает, сколько времени выполняется запрос
+- FROM pg_stat_activity	Использует системное представление с текущими сессиями
+- WHERE state = 'active'	Отбирает только те процессы, которые выполняют запрос прямо сейчас
+- AND now() - query_start > ...	Показывает только те, кто работает больше 5 минут
+
+Чтобы завершить процесс, нужно знать его PID, дальше есть два варианта развития событий:
+- ```SELECT pg_cancel_backend(PID);``` - Мягкое завершение — запрос прервётся, но соединение останется открытым.
+- ```SELECT pg_terminate_backend(PID);``` - Жёсткое завершение — убивает соединение целиком. Используется для зависших/тяжёлых/опасных запросов.
+
+# 8. Логирование и анализ логов 
+### Найти логи PostgreSQL и системные логи Debian (директория /var/log/, файлы syslog, daemon.log). Определить, какие события логгирует СУБД, а какие – ОС. 
+
