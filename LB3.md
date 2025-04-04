@@ -131,12 +131,12 @@ PostgreSQL должен прочитать все строки в таблице
                         END;
                         $$;
 
-![image](https://github.com/user-attachments/assets/162fab95-53a5-4230-8cc6-472c876f1541)
+![image](https://github.com/user-attachments/assets/9df0aae2-0b6c-4f3c-8316-886c0711eda3)
+
 
 SELECT insert_order_check('Тестовый заказ через функцию', NOW(), 1500);
 
 SELECT insert_order_check('Неверный заказ', NOW(), -100);
 
+![image](https://github.com/user-attachments/assets/47c9ca04-3e48-4cbf-a770-b58b5f054b9b)
 
-SELECT * FROM orders
-WHERE order_name = 'Тестовый заказ через функцию';
