@@ -1,4 +1,4 @@
-![image](https://github.com/user-attachments/assets/aaeb719e-0f95-4e81-a137-dc616f746181)**Лабораторная работа №3: Расширенные возможности и оптимизация 
+![image](https://github.com/user-attachments/assets/bfc2130a-fda5-43e6-8f5e-a27b1a1512d0)![image](https://github.com/user-attachments/assets/aaeb719e-0f95-4e81-a137-dc616f746181)**Лабораторная работа №3: Расширенные возможности и оптимизация 
 PostgreSQL на Debian**
 
 Получить опыт в использовании продвинутых функций PostgreSQL (индексы, 
@@ -67,14 +67,28 @@ PostgreSQL на Debian**
           
 EXPLAIN (предварительный анализ) и EXPLAIN ANALYZE (фактический анализ)
 
-
            EXPLAIN SELECT * FROM orders WHERE order_name = 'Тестовый заказ №49999';
+           EXPLAIN ANALYZE SELECT * FROM orders WHERE amount = 2512;
 
 ![image](https://github.com/user-attachments/assets/b0e6266d-175e-41b3-9e28-7604430ef09c)
 
            EXPLAIN ANALYZE SELECT * FROM orders WHERE order_name = 'Тестовый заказ №49999';
+           EXPLAIN ANALYZE SELECT * FROM orders WHERE amount = 2512;
            
 ![image](https://github.com/user-attachments/assets/6eb33d5f-535c-4b30-826f-15764c696623)
 
+Индекс — это специальная структура данных, которая позволяет ускорить поиск строк в таблице по определённым столбцам.
+Когда происходит запрос вроде:
 
+```SELECT * FROM users WHERE email = 'user@example.com';```
+
+PostgreSQL должен прочитать все строки в таблице, чтобы найти подходящую. Это называется Seq Scan (последовательное сканирование таблицы).
+
+Если создать индекс на поле email, то PostgreSQL быстро найдёт нужную строку, не читая всю таблицу. Такой способ называется Index Scan.
+
+            CREATE INDEX idx_orders_order_name ON orders(order_name);
+            CREATE INDEX idx_orders_amount ON orders(amount);
+
+# 3. Хранимые функции  
+### Создать функцию на pgSQL, которая проверяет переданное значение и в зависимости от результата либо вставляет новую запись в таблицу, либо возвращает сообщение об ошибке (например, «Запись добавлена» или «Ошибка отрицательное значение»). Выполнить вызов функции в psql и проверить результат вставки. 
 
