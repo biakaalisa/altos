@@ -241,3 +241,11 @@ pg_stat_all_indexes - статистика по индексам:
                    analyze_count,
                    autoanalyze_count
             FROM pg_stat_user_tables;
+            
+![image](https://github.com/user-attachments/assets/9fcc9bb7-b303-4e8a-a5ad-974ca2cb91e6)
+
+- relname - имя таблицы
+- vacuum_count - количество ручных операций VACUUM
+- autovacuum_count - количество автоматических операций VACUUM
+- analyze_count - количество ручных операций ANALYZE
+- autoanalyze_count - количество автоматических операций ANALYZE
