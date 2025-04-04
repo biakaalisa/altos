@@ -134,12 +134,41 @@ PostgreSQL должен прочитать все строки в таблице
 ![image](https://github.com/user-attachments/assets/9df0aae2-0b6c-4f3c-8316-886c0711eda3)
 
 
-SELECT insert_order_check('Тестовый заказ через функцию', NOW()::timestamp, 1500);
-
-SELECT insert_order_check('Неверный заказ', NOW()::timestamp, -1500);
+            SELECT insert_order_check('Тестовый заказ через функцию', NOW()::timestamp, 1500);
+            
+            SELECT insert_order_check('Неверный заказ', NOW()::timestamp, -1500);
 
 ![image](https://github.com/user-attachments/assets/47c9ca04-3e48-4cbf-a770-b58b5f054b9b)
 
 # 4. Триггеры 
 ### Создать триггер (BEFORE или AFTER INSERT/UPDATE), который проверяет бизнесправила (например, недопустимость отрицательной цены).При нарушении условий вызвать RAISE EXCEPTION. Вставить данные для проверки срабатывания триггера. 
 
+Создадим триггер который будет:
+- срабатывать до вставки или обновления (BEFORE INSERT OR UPDATE);
+- проверять бизнес-правило: значение amount не может быть отрицательным;
+- если условие нарушено — вызывать RAISE EXCEPTION;
+- иначе — разрешать операцию.
+
+Создаем триггурную функцию:
+
+            CREATE OR REPLACE FUNCTION check_amount_before_insert_update()
+            RETURNS TRIGGER AS $$
+            BEGIN
+                IF NEW.amount < 0 THEN
+                    RAISE EXCEPTION 'Ошибка: значение amount не может быть отрицательным.';
+                END IF;
+                RETURN NEW;
+            END;
+            $$ LANGUAGE plpgsql;
+
+Привязываем созданный триггер к таблице:
+
+            CREATE TRIGGER trg_check_amount
+            BEFORE INSERT OR UPDATE ON orders
+            FOR EACH ROW
+            EXECUTE FUNCTION check_amount_before_insert_update();
+Проверяем:
+
+            INSERT INTO orders (order_name, order_date, amount) VALUES ('Нормальный заказ', NOW(), 1500);
+            
+            INSERT INTO orders (order_name, order_date, amount) VALUES ('Плохой заказ', NOW(), -1500);
