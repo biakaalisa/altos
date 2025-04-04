@@ -291,11 +291,16 @@ pg_stat_database — это одно из встроенных статисти�
 # 8. Логирование и анализ логов 
 ### Найти логи PostgreSQL и системные логи Debian (директория /var/log/, файлы syslog, daemon.log). Определить, какие события логгирует СУБД, а какие – ОС. 
 
-![image](https://github.com/user-attachments/assets/cc511702-8a8f-4926-93c4-3403e1628d5a)
-![image](https://github.com/user-attachments/assets/f49ad7a1-d497-4b6a-981c-56c15c82f464)
+В системе не установлен rsyslog, который отвечает за запись логов в файлы вроде syslog, daemon.log, и т.д.
 
-![image](https://github.com/user-attachments/assets/d9f72705-6525-4e0b-80b3-2c59cf312e9b)
-![image](https://github.com/user-attachments/assets/ea66d8b2-7956-4e91-9e0d-4d5ef810d5df)
+Вместо этого вся система логгирует в журнал systemd через journald, который хранит логи в бинарной базе (/run/log/journal/ или /var/log/journal/), а не в текстовых файлах.
+
+![image](https://github.com/user-attachments/assets/747e728b-c4d3-4704-a66e-046585cb9c29)
+![image](https://github.com/user-attachments/assets/cb515f05-65d1-4025-8476-88bfdce7beb0)
+
+Логи postgres:
+
+![image](https://github.com/user-attachments/assets/0387bd88-c1f0-4bd7-99bb-8cb6ccef8674)
 
 ![image](https://github.com/user-attachments/assets/12c4e8ca-2caa-44e2-9674-bd093134050e)
 
