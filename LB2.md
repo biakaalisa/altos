@@ -270,3 +270,11 @@ pg_stat_activity - Это системное представление (view), 
 # 8. Логирование и анализ логов 
 ### Найти логи PostgreSQL и системные логи Debian (директория /var/log/, файлы syslog, daemon.log). Определить, какие события логгирует СУБД, а какие – ОС. 
 
+![image](https://github.com/user-attachments/assets/cc511702-8a8f-4926-93c4-3403e1628d5a)
+![image](https://github.com/user-attachments/assets/f49ad7a1-d497-4b6a-981c-56c15c82f464)
+
+![image](https://github.com/user-attachments/assets/d9f72705-6525-4e0b-80b3-2c59cf312e9b)
+![image](https://github.com/user-attachments/assets/ea66d8b2-7956-4e91-9e0d-4d5ef810d5df)
+
+![image](https://github.com/user-attachments/assets/12c4e8ca-2caa-44e2-9674-bd093134050e)
+
