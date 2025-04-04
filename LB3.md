@@ -13,6 +13,8 @@ PostgreSQL на Debian**
 - maintenance_work_mem - объем памяти для операций обслуживания БД (VACUUM, CREATE INDEX и др.). от 64MB до 512MB
 - effective_cache_size - оценка объема памяти, доступного для кэширования ОС и PostgreSQL. Не выделяет память, но помогает планировщику запросов. Обычно ставится: 60–75% ОЗУ.
 
+           !!!! sudo nano /etc/postgresql/15/main/postgresql.conf !!!!
+
 Для того, чтобы узнать количество оперативной памяти:
 
           free -h
@@ -22,4 +24,41 @@ PostgreSQL на Debian**
   - work_mem = 16MB
   - maintenance_work_mem = 128MB
   - effective_cache_size = 1.2GB
+
+    sudo systemctl restart postgresql
+
+Для проверки внесенных изменений:
+
+          SHOW shared_buffers;
+          SHOW work_mem;
+          SHOW maintenance_work_mem;
+          SHOW effective_cache_size;
+
+# 2. Создание и анализ индексов 
+### Использовать таблицы из предыдущих лабораторных работ или при необходимости добавить новые. При необходимости наполнить их большим количеством строк для тестирования, смотрим generate_series Создать индексы (по одному или нескольким столбцам) на подходящих полях. Сохранить команды CREATE INDEX. Выполнить запросы EXPLAIN и EXPLAIN ANALYZE до и после создания индексов.Сравнить планы (Seq Scan, Index Scan) и время выполнения запросов.
+
+Создали и заполнили данными новую таблицу:
+
+          CREATE TABLE orders (
+              id serial PRIMARY KEY,
+              order_name text NOT NULL,
+              order_date timestamp NOT NULL DEFAULT now(),
+              amount integer NOT NULL
+          );
+
+
+          INSERT INTO orders (order_name, order_date, amount)
+          SELECT 
+              'Тестовый заказ №' || i AS order_name,
+              NOW() - (i * INTERVAL '1 day') AS order_date,
+              (RANDOM() * 10000)::INT AS amount
+          FROM generate_series(1, 50 000) AS i;
+
+          
+EXPLAIN (предварительный анализ) и EXPLAIN ANALYZE (фактический анализ)
+
+EXPLAIN SELECT * FROM orders WHERE order_name = 'Тестовый заказ №49999';
+
+EXPLAIN ANALYZE SELECT * FROM orders WHERE order_name = 'Тестовый заказ №49999';
+
 
