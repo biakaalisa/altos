@@ -239,17 +239,25 @@ pg_stat_activity - Это системное представление (view), 
 - usename — имя пользователя
 - client_addr — IP клиента
 - state — статус соединения (active / idle / idle in transaction / ...)
+  
 ![image](https://github.com/user-attachments/assets/42847ccb-58dd-4942-abae-d91cbe50822d)
+
 - query — текущий SQL-запрос
 - query_start — когда начался запрос
 - backend_start — когда началась сессия
 - pid — уникальный идентификатор процесса
+
+
+![image](https://github.com/user-attachments/assets/5224a1b6-b494-486e-abca-6a74364c5886)
 
 Для просмотра активных запросов, можно использовать команду:
 
       SELECT *
       FROM pg_stat_activity
       WHERE state = 'active';
+
+
+![image](https://github.com/user-attachments/assets/ce9686ba-d9b2-47af-9fd3-4d3a7ff280ca)
 
 Для просмотра долговыполняющихся запросов:
 
@@ -263,9 +271,22 @@ pg_stat_activity - Это системное представление (view), 
 - WHERE state = 'active'	Отбирает только те процессы, которые выполняют запрос прямо сейчас
 - AND now() - query_start > ...	Показывает только те, кто работает больше 5 минут
 
+![image](https://github.com/user-attachments/assets/64affb7b-5f82-4ccf-976d-b3c04ce77010)
+
 Чтобы завершить процесс, нужно знать его PID, дальше есть два варианта развития событий:
 - ```SELECT pg_cancel_backend(PID);``` - Мягкое завершение — запрос прервётся, но соединение останется открытым.
 - ```SELECT pg_terminate_backend(PID);``` - Жёсткое завершение — убивает соединение целиком. Используется для зависших/тяжёлых/опасных запросов.
+
+pg_stat_database — это одно из встроенных статистических представлений PostgreSQL, которое показывает общую статистику по каждой базе данных 
+ 
+![image](https://github.com/user-attachments/assets/44d8f2d9-df44-42bc-82e2-19f46f2dacb2)
+
+- datid	OID базы данных
+- datname	Имя базы данных
+- numbackends	Сколько сейчас подключено клиентов
+- xact_commit	Сколько транзакций успешно завершено (COMMIT)
+- xact_rollback	Сколько транзакций было откатано (ROLLBACK)
+- tup_returned	Строк возвращено клиенту
 
 # 8. Логирование и анализ логов 
 ### Найти логи PostgreSQL и системные логи Debian (директория /var/log/, файлы syslog, daemon.log). Определить, какие события логгирует СУБД, а какие – ОС. 
