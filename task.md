@@ -9,6 +9,6 @@
 
 ПОСЛЕ:
 ![image](https://github.com/user-attachments/assets/786ebda2-9db9-412d-a737-f08695b21d43)
-![image](https://github.com/user-attachments/assets/38f07efc-14b3-4ae7-a5af-1d7b610b32c1)
+![image](https://github.com/user-attachments/assets/60f8cb4e-9d7e-4957-9ea2-85b96ab048a2)
 
 Теперь у меня в таблице заполнено 43678 строк! 6322 строки удилились!
